@@ -3,8 +3,21 @@
  * for Docker builds.
  */
 await import("./src/env.js");
+// const removeImports = require("next-remove-imports")();
+import removeImports from "next-remove-imports";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
+};
+
+export const removeImportsConfig = removeImports({});
 
 export default config;
