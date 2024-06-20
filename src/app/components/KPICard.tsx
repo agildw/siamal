@@ -1,6 +1,6 @@
 interface KPICardProps {
   title: string;
-  value: number;
+  value: number | string;
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 

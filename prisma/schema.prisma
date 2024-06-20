@@ -52,6 +52,7 @@ model Donation {
     id            String    @id @default(uuid())
     status      DonationStatus @default(PENDING)
     amount        Int
+    note          String?
     donorName     String
     donorEmail    String
     donorPhone    String

@@ -1,13 +1,18 @@
+"use client";
 import {
-  Paper,
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
+  TablePagination,
   TableRow,
 } from "@mui/material";
 import type { Donation, Campaign } from "@prisma/client";
 import moment from "moment";
+import { useState } from "react";
+import StatusChip from "~/app/components/StatusChip";
+import { handleAmount } from "~/app/utils/util";
 
 type DonationWithCampaign = Donation & { campaign: Pick<Campaign, "title"> };
 
@@ -16,35 +21,87 @@ interface DontaionTableProps {
 }
 
 const DonationTable = ({ donations }: DontaionTableProps) => {
+  donations.sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - donations.length) : 0;
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col space-y-4 bg-white p-4">
       <p className="text-xl font-bold text-gray-600">Recent Donations</p>
-      <Table component={Paper}>
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>Donor</TableCell>
             <TableCell>Amount</TableCell>
             <TableCell>Campaign</TableCell>
+            <TableCell>Status</TableCell>
             <TableCell>Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {donations.length === 0 && (
             <TableRow>
-              <TableCell colSpan={4}>No donations yet</TableCell>
+              <TableCell colSpan={5}>No donations yet</TableCell>
             </TableRow>
           )}
-          {donations.map((donation) => (
-            <TableRow key={donation.id}>
-              <TableCell>{donation.donorName}</TableCell>
-              <TableCell>{donation.amount}</TableCell>
-              <TableCell>{donation.campaign.title}</TableCell>
-              <TableCell>
-                {moment(donation.createdAt).format("MMM D, YYYY")}
-              </TableCell>
+          {/* {donations.map((donation) => ( */}
+          {donations
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((donation) => (
+              <TableRow key={donation.id}>
+                <TableCell>{donation.donorName}</TableCell>
+                <TableCell>Rp{handleAmount(donation.amount)}</TableCell>
+                {/* change to ... if title is too long */}
+                <TableCell className="max-w-[20px] truncate">
+                  {donation.campaign.title}
+                </TableCell>
+                <TableCell>
+                  <StatusChip status={donation.status} />
+                </TableCell>
+                <TableCell>
+                  {moment(donation.createdAt).format("MMM D, YYYY")}
+                </TableCell>
+              </TableRow>
+            ))}
+
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={6} />
             </TableRow>
-          ))}
+          )}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              count={donations.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              colSpan={5}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </div>
   );

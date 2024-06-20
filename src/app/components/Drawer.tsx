@@ -1,5 +1,6 @@
 "use client";
 import {
+  Button,
   List,
   ListItem,
   ListItemButton,
@@ -7,55 +8,73 @@ import {
   ListItemText,
   useMediaQuery,
 } from "@mui/material";
-import { Squares2X2Icon, GlobeAmericasIcon } from "@heroicons/react/24/solid";
+import {
+  Squares2X2Icon,
+  GlobeAmericasIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
 import { useTheme } from "@mui/material/styles";
 import MUIDrawer from "@mui/material/Drawer";
 
 import { useAtom } from "jotai";
 import { drawerAtom } from "../utils/atoms";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface DrawerItemsProps {
   title: string;
   icon: JSX.Element;
+  url: string;
 }
 
 const navItems = [
   {
     title: "Dashboard",
     icon: <Squares2X2Icon className="text-inherit" />,
+    url: "/dashboard",
   },
   {
     title: "Campaigns",
     icon: <GlobeAmericasIcon className="text-inherit" />,
+    url: "/dashboard/campaigns",
+  },
+  {
+    title: "Admin",
+    icon: <UserCircleIcon className="text-inherit" />,
+    url: "/dashboard/admin",
   },
 ];
 
-const DrawerItems = ({ title, icon }: DrawerItemsProps) => {
+const DrawerItems = ({ title, icon, url }: DrawerItemsProps) => {
+  const pathname = usePathname();
   return (
-    <ListItem
-      disablePadding
-      // sx={{
-      //   color: "white",
-      // }}
-      className="rounded-lg text-gray-400 hover:text-blue-500"
-    >
-      <ListItemButton sx={{ borderRadius: 2 }}>
-        <ListItemIcon
-          sx={{
-            height: 28,
-            width: 28,
-            color: "inherit",
-          }}
-        >
-          {icon}
-        </ListItemIcon>
-        <ListItemText
-          primary={title}
-          primaryTypographyProps={{ variant: "body1" }}
-        />
-      </ListItemButton>
-    </ListItem>
+    <Link href={url} passHref>
+      <ListItem
+        disablePadding
+        // className="rounded-lg text-gray-400 hover:text-blue-500"
+        className={`rounded-lg ${
+          pathname === url ? "bg-blue-100 text-blue-500" : "text-gray-400"
+        } hover:text-blue-500
+          `}
+      >
+        <ListItemButton sx={{ borderRadius: 2 }}>
+          <ListItemIcon
+            sx={{
+              height: 28,
+              width: 28,
+              color: "inherit",
+            }}
+          >
+            {icon}
+          </ListItemIcon>
+          <ListItemText
+            primary={title}
+            primaryTypographyProps={{ variant: "body1" }}
+          />
+        </ListItemButton>
+      </ListItem>
+    </Link>
   );
 };
 
@@ -72,6 +91,7 @@ const Drawer = ({ drawerWidth }: { drawerWidth: number }) => {
           backgroundColor: "white",
           // shadow effect
           boxShadow: "0px 8px 8px rgba(0, 0, 0, 0.1)",
+          height: "100vh",
         },
       }}
       sx={{
@@ -95,8 +115,10 @@ const Drawer = ({ drawerWidth }: { drawerWidth: number }) => {
         sx={{
           p: 4,
           justifyContent: "center",
+          height: "100vw",
+          display: "flex",
+          flexDirection: "column",
         }}
-        className="space-y-4"
       >
         <div className="mb-16 flex flex-row space-x-4">
           <Image
@@ -112,9 +134,25 @@ const Drawer = ({ drawerWidth }: { drawerWidth: number }) => {
           </div>
         </div>
         {/* <DrawerItems title="Dasboard" icon={<BeakerIcon />} /> */}
-        {navItems.map((item, index) => (
-          <DrawerItems key={index} title={item.title} icon={item.icon} />
-        ))}
+        <div className="flex grow flex-col gap-2">
+          {navItems.map((item, index) => (
+            <DrawerItems
+              key={index}
+              title={item.title}
+              icon={item.icon}
+              url={item.url}
+            />
+          ))}
+        </div>
+        {/* <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#3b82f6",
+          }}
+          className="rounded-lg bg-blue-300"
+        >
+          Logout
+        </Button> */}
       </List>
     </MUIDrawer>
   );

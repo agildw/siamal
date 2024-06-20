@@ -1,7 +1,7 @@
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
+  // publicProcedure,
 } from "~/server/api/trpc";
 
 export const donationRouter = createTRPCRouter({
@@ -14,6 +14,7 @@ export const donationRouter = createTRPCRouter({
         campaign: {
           select: {
             title: true,
+            id: true,
           },
         },
       },

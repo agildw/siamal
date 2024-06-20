@@ -4,6 +4,9 @@ import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+
 export const metadata = {
   title: "Siamal Dashboard",
   description: "Siamal Dashboard",

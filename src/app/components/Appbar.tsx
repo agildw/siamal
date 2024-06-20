@@ -1,16 +1,30 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { AppBar as MUIAppBar, Toolbar, useMediaQuery } from "@mui/material";
+import {
+  AppBar as MUIAppBar,
+  Menu,
+  MenuItem,
+  Toolbar,
+  useMediaQuery,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 // import AccountAppBar from "./AccountAppBar";
-
+import { Squares2X2Icon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { drawerAtom } from "../utils/atoms";
+import { useState } from "react";
 import Image from "next/image";
+import type { User } from "next-auth";
+import { signOut } from "next-auth/react";
 
-const AppBar = ({ drawerWidth }: { drawerWidth: number }) => {
+interface AppBarProps {
+  drawerWidth: number;
+  user: User;
+}
+
+const AppBar = ({ drawerWidth, user }: AppBarProps) => {
   const theme = useTheme();
   const router = useRouter();
   // if width is less than 600px, then responsiveWidth = 0
@@ -20,6 +34,16 @@ const AppBar = ({ drawerWidth }: { drawerWidth: number }) => {
 
   const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
   const [drawer, setDrawer] = useAtom(drawerAtom);
+
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   return (
     <div>
@@ -54,21 +78,61 @@ const AppBar = ({ drawerWidth }: { drawerWidth: number }) => {
                 router.push("/");
               }
             }}
+            className="flex cursor-pointer flex-row space-x-3"
           >
-            <p>siamal</p>
+            <Squares2X2Icon className="h-8 w-8 fill-current text-blue-500" />
           </div>
-          <div className="flex flex-row space-x-3 rounded-lg bg-gray-100 p-2 px-3">
-            <Image
-              src="/profile.png"
-              alt="logo"
-              width={35}
-              height={15}
-              className="rounded-lg"
-            />
-            <div className="flex flex-col">
-              <p className="text-sm">Agil Yudistira</p>
-              <p className="text-xs">@agil</p>
+          <div>
+            <div
+              className="flex cursor-pointer flex-row items-center justify-center space-x-3 rounded-lg  p-2 px-3"
+              onClick={handleOpenUserMenu}
+            >
+              <Image
+                src="/profile.png"
+                alt="logo"
+                width={35}
+                height={15}
+                className="rounded-lg"
+              />
+              <div className="hidden flex-col sm:flex">
+                <p className="text-sm font-semibold">{user.name}</p>
+                <p className="text-xs ">{user.username}</p>
+              </div>
+              <ChevronDownIcon className="hidden h-4 w-4 fill-current text-gray-500 sm:block" />
             </div>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem
+                onClick={() => {
+                  router.push(`/dashboard/admin/${user.id}`);
+                  handleCloseUserMenu();
+                }}
+              >
+                Profile
+              </MenuItem>
+
+              <MenuItem
+                onClick={() => {
+                  void signOut();
+                }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
           </div>
           {/* <AccountAppBar /> */}
         </Toolbar>
