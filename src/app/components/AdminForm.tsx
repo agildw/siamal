@@ -7,6 +7,7 @@ import { api } from "~/trpc/react";
 import * as Yup from "yup";
 import type { AlertMessage } from "types/utils";
 import type { User } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 interface AdminFormProps {
   user?: User;
@@ -19,6 +20,7 @@ const dataSchema = Yup.object().shape({
 });
 
 const AdminForm = ({ user }: AdminFormProps) => {
+  const router = useRouter();
   const [message, setMessage] = useState<AlertMessage | null>(null);
   const createMutation = api.user.create.useMutation();
   const updateMutation = api.user.update.useMutation();
@@ -61,11 +63,15 @@ const AdminForm = ({ user }: AdminFormProps) => {
         });
 
         createMutation.mutate(values, {
-          onSuccess: () => {
+          onSuccess: ({ id }) => {
             setMessage({
               type: "success",
               message: "User created successfully",
             });
+
+            setTimeout(() => {
+              router.push(`/dashboard/admin/${id}`);
+            }, 1000);
           },
           onError: (error) => {
             setMessage({
@@ -91,6 +97,9 @@ const AdminForm = ({ user }: AdminFormProps) => {
           type: "success",
           message: "User deleted successfully",
         });
+        setTimeout(() => {
+          router.push("/dashboard/admin");
+        }, 1000);
       },
       onError: (error) => {
         setMessage({

@@ -25,6 +25,10 @@ const DonationTable = ({ donations }: DontaionTableProps) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
+  // const filteredDonations = donations.filter((donation) => {
+  //   return donation.status === "PAID";
+  // });
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -70,7 +74,6 @@ const DonationTable = ({ donations }: DontaionTableProps) => {
               <TableRow key={donation.id}>
                 <TableCell>{donation.donorName}</TableCell>
                 <TableCell>Rp{handleAmount(donation.amount)}</TableCell>
-                {/* change to ... if title is too long */}
                 <TableCell className="max-w-[20px] truncate">
                   {donation.campaign.title}
                 </TableCell>
