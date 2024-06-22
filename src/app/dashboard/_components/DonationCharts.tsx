@@ -15,6 +15,15 @@ interface ChartProps {
   // campaigns: Campaign[];
 }
 
+const backgroundColors = [
+  "#60a5fa",
+  "#fbbf24",
+  "#d97706",
+  "#818cf8",
+  "#d97706",
+  "#6ee7b7",
+];
+
 const DonationCharts = ({ donations }: ChartProps) => {
   const sevenDays = Array.from({ length: 7 }, (_, i) =>
     moment().subtract(i, "days").format("YYYY-MM-DD"),
@@ -42,27 +51,10 @@ const DonationCharts = ({ donations }: ChartProps) => {
       {} as Record<string, number>,
     );
 
-  const sortedDonations = Object.entries(totalDonationsByCampaign)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
-
-  const topThreeDonations = sortedDonations.reduce(
-    (acc, [campaignId, amount]) => {
-      const campaign = donations.find(
-        (donation) => donation.campaign?.id === campaignId,
-      )?.campaign;
-      if (campaign) {
-        acc[campaign.title] = amount;
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
   return (
     <div className="my-8 flex flex-col space-y-4">
       <div className="flex flex-col space-y-6 rounded-lg bg-white p-4">
-        <p className="text-xl font-bold text-gray-600">Daily Donations</p>
+        <p className="text-xl font-bold text-gray-600">Raised Funds Daily</p>
         <ChartJS
           type="line"
           className="max-h-72 w-full"
@@ -119,10 +111,9 @@ const DonationCharts = ({ donations }: ChartProps) => {
       {/* <div className="container flex flex-col gap-2 text-gray-600 sm:flex-row sm:space-x-4"> */}
       <div className="grid  grid-cols-1 gap-4 sm:grid-flow-col">
         <div className="flex w-full flex-col gap-2 rounded-lg bg-white p-4 sm:col-span-4">
-          {/*  raised funds by campaigns daily */}
-          <p className="text-xl font-bold text-gray-600">
-            Campaigns Raised Funds Daily
-          </p>
+          {/* <p className="text-xl font-bold text-gray-600">
+            Raised Funds by Campaigns Daily
+          </p> */}
           <ChartJS
             type="bar"
             className="max-h-72 w-full"
@@ -147,12 +138,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
                         0,
                       );
                     }),
-                    backgroundColor:
-                      index === 0
-                        ? "#60a5fa"
-                        : index === 1
-                          ? "#fbbf24"
-                          : "#d97706",
+                    backgroundColor: backgroundColors[index],
                   };
                 },
               ),
@@ -206,18 +192,36 @@ const DonationCharts = ({ donations }: ChartProps) => {
               ),
               datasets: [
                 {
-                  data: Object.values(topThreeDonations),
-                  backgroundColor: [
-                    "#60a5fa",
-                    "#fbbf24",
-                    "#d97706",
-                    // "#60a5fa",
-                    // "#818cf8",
-                    // "#d97706",
-                    // "#6ee7b7",
-                  ],
+                  data: Object.values(totalDonationsByCampaign),
+                  backgroundColor: backgroundColors,
                 },
               ],
+            }}
+            options={{
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "top",
+                },
+
+                tooltip: {
+                  callbacks: {
+                    label: (context) => {
+                      // return `Raised Funds: Rp${handleAmount(context.parsed.y)}`;
+                      let label = context.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      const value = context.parsed;
+                      if (value !== null && value !== undefined) {
+                        label += `Rp${handleAmount(value)}`;
+                      }
+                      return label;
+                    },
+                  },
+                  intersect: false,
+                },
+              },
             }}
           />
         </div>
