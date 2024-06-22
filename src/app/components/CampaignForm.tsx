@@ -22,8 +22,9 @@ import type { AlertMessage } from "types/utils";
 import { useRouter } from "next/navigation";
 import type { CampaignWithDonations } from "types/campaign";
 import { DataGrid } from "@mui/x-data-grid";
-import type { Donation } from "@prisma/client";
+import type { Donation, DonationStatus } from "@prisma/client";
 import { handleAmount } from "../utils/util";
+import StatusChip from "./StatusChip";
 
 interface CampaignFormProps {
   userId: string;
@@ -39,6 +40,27 @@ const dataSchema = Yup.object().shape({
   status: Yup.string().required("Status is required"),
 });
 
+const dateFormattingOptions: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function renderDate(checkTimeAndDate: any) {
+  if (!checkTimeAndDate) {
+    return "";
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return new Date(checkTimeAndDate).toLocaleDateString(
+    "id-ID",
+    dateFormattingOptions,
+  );
+}
+
 const DonationList = ({ donations }: { donations: Donation[] }) => {
   return (
     <div className="h-[30rem] w-full">
@@ -46,8 +68,10 @@ const DonationList = ({ donations }: { donations: Donation[] }) => {
         rows={donations}
         columns={[
           // hide
-          { field: "id", headerName: "ID", width: 90 },
-          { field: "donorName", headerName: "Donor Name", width: 150 },
+          { field: "id", headerName: "ID" },
+          { field: "donorName", headerName: "Donor Name", width: 200 },
+          { field: "donorEmail", headerName: "Donor Email", width: 150 },
+          { field: "donorPhone", headerName: "Donor Phone", width: 150 },
           {
             field: "amount",
             headerName: "Amount",
@@ -56,8 +80,30 @@ const DonationList = ({ donations }: { donations: Donation[] }) => {
               <p>Rp{handleAmount(params.value as number)}</p>
             ),
           },
-          { field: "createdAt", headerName: "Created At", width: 200 },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 150,
+            renderCell: (params) => (
+              <StatusChip status={params.value as DonationStatus} />
+            ),
+          },
+          { field: "paymentMethod", headerName: "Payment Method", width: 200 },
+          {
+            field: "createdAt",
+            headerName: "Created At",
+            width: 200,
+
+            renderCell: (params) => renderDate(params.value),
+          },
         ]}
+        initialState={{
+          columns: {
+            columnVisibilityModel: {
+              id: false,
+            },
+          },
+        }}
       />
     </div>
   );
@@ -135,8 +181,11 @@ const CampaignForm = ({ userId, campaign }: CampaignFormProps) => {
                 type: "success",
                 message: "Campaign created successfully",
               });
-              setContent("");
-              formik.resetForm();
+              setTimeout(() => {
+                void router.push("/dashboard/campaigns");
+              }, 1500);
+              // setContent("");
+              // formik.resetForm();
             },
             onError: (error) => {
               setMessage({
@@ -166,7 +215,7 @@ const CampaignForm = ({ userId, campaign }: CampaignFormProps) => {
 
           setTimeout(() => {
             void router.push("/dashboard/campaigns");
-          }, 3000);
+          }, 1500);
         },
         onError: (error) => {
           setMessage({
