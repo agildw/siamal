@@ -1,6 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { Alert, Button, Divider, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { api } from "~/trpc/react";
@@ -15,8 +24,9 @@ interface AdminFormProps {
 
 const dataSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  username: Yup.string().required("Username is required"),
+  email: Yup.string().email().required("Email is required"),
   password: Yup.string().required("Password is required"),
+  role: Yup.string().required("Role is required"),
 });
 
 const AdminForm = ({ user }: AdminFormProps) => {
@@ -28,8 +38,9 @@ const AdminForm = ({ user }: AdminFormProps) => {
   const formik = useFormik({
     initialValues: {
       name: user?.name ?? "",
-      username: user?.username ?? "",
+      email: user?.email ?? "",
       password: "",
+      role: user?.role ?? "ADMIN",
     },
     validationSchema: dataSchema,
     onSubmit: (values) => {
@@ -149,14 +160,14 @@ const AdminForm = ({ user }: AdminFormProps) => {
           size="small"
         />
         <TextField
-          id="username"
-          name="username"
-          label="Username"
+          id="email"
+          name="email"
+          label="Email"
           variant="outlined"
-          value={formik.values.username}
+          value={formik.values.email}
           onChange={formik.handleChange}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
           size="small"
         />
         <TextField
@@ -171,6 +182,20 @@ const AdminForm = ({ user }: AdminFormProps) => {
           size="small"
           type="password"
         />
+        <FormControl variant="outlined" fullWidth>
+          <InputLabel htmlFor="status">Role</InputLabel>
+          <Select
+            value={formik.values.role}
+            onChange={formik.handleChange}
+            label="Role"
+            size="small"
+            id="role"
+            name="role"
+          >
+            <MenuItem value="ADMIN">Admin</MenuItem>
+            <MenuItem value="USER">User</MenuItem>
+          </Select>
+        </FormControl>
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>

@@ -54,7 +54,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
   return (
     <div className="my-8 flex flex-col space-y-4">
       <div className="flex flex-col space-y-6 rounded-lg bg-white p-4">
-        <p className="text-xl font-bold text-gray-600">Raised Funds Daily</p>
+        <p className="text-xl font-bold text-gray-600">Dana Terkumpul Harian</p>
         <ChartJS
           type="line"
           className="max-h-72 w-full"
@@ -62,7 +62,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
             labels: sevenDays.map((day) => moment(day).format("MMM D")),
             datasets: [
               {
-                label: "Raised Funds",
+                label: "Dana Terkumpul",
                 data: donationsByDay,
                 fill: true,
                 borderColor: "#60a5fa",
@@ -94,7 +94,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
               tooltip: {
                 callbacks: {
                   label: (context) => {
-                    return `Raised Funds: Rp${handleAmount(context.parsed.y)}`;
+                    return `Dana Terkumpul: Rp${handleAmount(context.parsed.y)}`;
                   },
                 },
                 intersect: false,
@@ -169,7 +169,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
                 tooltip: {
                   callbacks: {
                     label: (context) => {
-                      return `Raised Funds: Rp${handleAmount(context.parsed.y)}`;
+                      return `Dana Terkumpul: Rp${handleAmount(context.parsed.y)}`;
                     },
                   },
                   intersect: false,

@@ -23,7 +23,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      username: string;
+      email: string;
       name: string;
     };
   }
@@ -31,7 +31,7 @@ declare module "next-auth" {
   interface User {
     id: string;
     name: string;
-    username: string;
+    email: string;
     // ...other properties
     // role: UserRole;
   }
@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.name = user.name;
-        token.username = user.username;
+        token.email = user.email;
       }
       return token;
     },
@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = String(token.id);
         session.user.name = String(token.name);
-        session.user.username = String(token.username);
+        session.user.email = String(token.email);
       }
       return session;
     },
@@ -65,19 +65,19 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         // // Add your own logic here
         // const user = { id: 1, name: "J Smith", username: "test@gmail.com" };
-        if (!credentials?.username || !credentials?.password) {
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
         const user = await db.user.findFirst({
           where: {
-            username: credentials.username,
+            email: credentials.email,
           },
         });
 

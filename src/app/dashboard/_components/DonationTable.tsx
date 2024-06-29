@@ -50,15 +50,15 @@ const DonationTable = ({ donations }: DontaionTableProps) => {
   };
   return (
     <div className="flex flex-col space-y-4 bg-white p-4">
-      <p className="text-xl font-bold text-gray-600">Recent Donations</p>
+      <p className="text-xl font-bold text-gray-600">Donasi Terkini</p>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Donor</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell>Campaign</TableCell>
+            <TableCell>Donatur</TableCell>
+            <TableCell>Jumlah</TableCell>
+            <TableCell>Kampanye</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell>Tanggal</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

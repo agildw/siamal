@@ -96,7 +96,7 @@ const AppBar = ({ drawerWidth, user }: AppBarProps) => {
               />
               <div className="hidden flex-col sm:flex">
                 <p className="text-sm font-semibold">{user.name}</p>
-                <p className="text-xs ">{user.username}</p>
+                <p className="text-xs ">{user.email}</p>
               </div>
               <ChevronDownIcon className="hidden h-4 w-4 fill-current text-gray-500 sm:block" />
             </div>

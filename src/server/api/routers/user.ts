@@ -18,7 +18,8 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        username: z.string(),
+        email: z.string().email(),
+        role: z.enum(["ADMIN", "USER"]),
         password: z.string(),
       }),
     )
@@ -27,7 +28,8 @@ export const userRouter = createTRPCRouter({
       return ctx.db.user.create({
         data: {
           name: input.name,
-          username: input.username,
+          email: input.email,
+          role: input.role,
           password: hashedPassword,
         },
       });
@@ -42,7 +44,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string(),
-        username: z.string(),
+        email: z.string().email(),
         password: z.string().optional(),
       }),
     )
@@ -54,7 +56,7 @@ export const userRouter = createTRPCRouter({
         where: { id: input.id },
         data: {
           name: input.name,
-          username: input.username,
+          email: input.email,
           password: hashedPassword,
         },
       });

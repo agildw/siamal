@@ -13,8 +13,9 @@ datasource db {
 model User {
     id            String    @id @default(cuid())
     name          String
-    username         String   @unique
+    role          UserRole  @default(USER)
     password      String
+    email         String    @unique
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
     campaigns     Campaign[]
@@ -76,4 +77,9 @@ enum DonationStatus {
     PAID
     CANCELLED
     EXPIRED
+}
+
+enum UserRole {
+    ADMIN
+    USER
 }

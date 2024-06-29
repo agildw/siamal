@@ -45,12 +45,11 @@ const StatusChip = ({
   return (
     <Chip
       label={status}
-      // color={status === "PAID" ? "primary" : "default"}
       size="small"
       sx={{
         color: color.text,
         backgroundColor: color.backgroundColor,
-        // padding: "4px 8px",
+        width: "fit-content",
       }}
     />
   );

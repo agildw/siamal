@@ -34,14 +34,14 @@ const navItems = [
     url: "/dashboard",
   },
   {
-    title: "Campaigns",
+    title: "Kampanye",
     icon: <GlobeAmericasIcon className="text-inherit" />,
     url: "/dashboard/campaigns",
   },
   {
-    title: "Admin",
+    title: "Users",
     icon: <UserCircleIcon className="text-inherit" />,
-    url: "/dashboard/admin",
+    url: "/dashboard/users",
   },
 ];
 

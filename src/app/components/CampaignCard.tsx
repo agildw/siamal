@@ -32,20 +32,28 @@ const CampaignCard = ({ campaign, showStatus = false }: CampaignCardProps) => {
           image={campaign.thumbnail}
           className="h-56 w-full object-cover"
         />
-        <CardContent>
-          {showStatus && <StatusChip status={campaign.status} />}
-          <p className="mt-2 text-xl font-bold">{campaign.title}</p>
-          <p className=" h-16 text-gray-500">
-            {handleTruncate(campaign.description, 50)}
-          </p>
-          <LinearProgress
-            variant="determinate"
-            value={progress > 100 ? 100 : progress}
-            className="mt-4"
-          />
-          <p className="mt-2 text-sm text-gray-500">
-            Rp{handleAmount(total)} raised of Rp{handleAmount(campaign.target)}
-          </p>
+        {/* <CardContent className="flex h-60 flex-col justify-between"> */}
+        <CardContent className="flex flex-col justify-between">
+          <div className="flex flex-col">
+            {showStatus && <StatusChip status={campaign.status} />}
+            <p className="mt-2 text-lg font-bold">
+              {handleTruncate(campaign.title, 20)}
+            </p>
+            <p className=" h-16 text-gray-500">
+              {handleTruncate(campaign.description, 50)}
+            </p>
+          </div>
+          <div className="flex flex-col">
+            <LinearProgress
+              variant="determinate"
+              value={progress > 100 ? 100 : progress}
+              className="mt-4"
+            />
+            <p className="mt-2 text-sm text-gray-500">
+              Rp{handleAmount(total)} raised of Rp
+              {handleAmount(campaign.target)}
+            </p>
+          </div>
         </CardContent>
       </CardActionArea>
     </Card>

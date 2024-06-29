@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   Divider,
   Paper,
   Table,
@@ -17,7 +18,20 @@ import PageWrapper from "~/app/components/PageWrapper";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
-const Administrators = async () => {
+const RoleChip = ({ role }: { role: string }) => {
+  return (
+    <Chip
+      label={role}
+      sx={{
+        color: role === "ADMIN" ? "#f87171" : "#3b82f6",
+        backgroundColor: role === "ADMIN" ? "#fee2e2" : "#dbeafe",
+        width: "fit-content",
+      }}
+    />
+  );
+};
+
+const Users = async () => {
   const session = await getServerAuthSession();
 
   if (!session?.user) {
@@ -30,8 +44,8 @@ const Administrators = async () => {
       url: "/dashboard",
     },
     {
-      title: "Admin",
-      url: "/dashboard/admin",
+      title: "Users",
+      url: "/dashboard/users",
     },
   ];
 
@@ -42,7 +56,7 @@ const Administrators = async () => {
       <Breadcrumbs links={links} />
       <div className="mt-4 flex flex-col space-y-4 rounded-lg bg-white p-4 text-gray-600">
         <div className="flex flex-row items-center justify-between">
-          <p className="text-xl font-bold">Admin</p>
+          <p className="text-xl font-bold">Users</p>
           <Link href="/dashboard/admin/create" passHref>
             <Button
               variant="contained"
@@ -50,7 +64,7 @@ const Administrators = async () => {
               className="rounded-lg"
               sx={{ borderRadius: "0.5rem" }}
             >
-              Create Admin
+              Create User
             </Button>
           </Link>
         </div>
@@ -61,6 +75,7 @@ const Administrators = async () => {
               <TableRow>
                 <TableCell>Username</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Role</TableCell>
                 <TableCell>Created At</TableCell>
                 <TableCell></TableCell>
               </TableRow>
@@ -68,8 +83,11 @@ const Administrators = async () => {
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.email}</TableCell>
                   <TableCell>{user.name}</TableCell>
+                  <TableCell>
+                    <RoleChip role={user.role} />
+                  </TableCell>
                   <TableCell>
                     {moment(user.createdAt).format("YYYY-MM-DD")}
                   </TableCell>
@@ -95,4 +113,4 @@ const Administrators = async () => {
   );
 };
 
-export default Administrators;
+export default Users;
