@@ -39,7 +39,7 @@ const navItems = [
     url: "/dashboard/campaigns",
   },
   {
-    title: "Users",
+    title: "Pengguna",
     icon: <UserCircleIcon className="text-inherit" />,
     url: "/dashboard/users",
   },
@@ -80,7 +80,7 @@ const DrawerItems = ({ title, icon, url }: DrawerItemsProps) => {
 const Drawer = ({ drawerWidth }: { drawerWidth: number }) => {
   const theme = useTheme();
   const [drawer, setDrawer] = useAtom(drawerAtom);
-  const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
   return (
     <MUIDrawer
