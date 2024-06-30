@@ -1,10 +1,10 @@
 export const handleAmount = (amount: number) => {
   // change thousands to k and millions to m
   if (amount >= 1000000) {
-    return `${(amount / 1000000).toFixed(1)}m`;
+    return `${(amount / 1000000).toFixed(1)}M`;
   }
   if (amount >= 1000) {
-    return `${(amount / 1000).toFixed(1)}k`;
+    return `${(amount / 1000).toFixed(1)}K`;
   }
   return `${amount}`;
 };
