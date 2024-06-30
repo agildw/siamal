@@ -1,8 +1,8 @@
 import { z } from "zod";
 import {
-  createTRPCRouter,
-  protectedProcedure,
-  // publicProcedure,
+    createTRPCRouter,
+    protectedProcedure, publicProcedure,
+    // publicProcedure,
 } from "~/server/api/trpc";
 import bcrypt from "bcrypt";
 
@@ -66,6 +66,25 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.user.delete({
         where: { id: input },
+      });
+    }),
+    createUser: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string().email(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const hashedPassword = await bcrypt.hash(input.password, 10);
+      return ctx.db.user.create({
+        data: {
+          name: input.name,
+          email: input.email,
+          role: "USER",
+          password: hashedPassword,
+        },
       });
     }),
 });
