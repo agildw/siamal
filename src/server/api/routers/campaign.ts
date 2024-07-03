@@ -1,3 +1,4 @@
+import type { CampaignWithTotalDonations } from "types/campaign";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -49,11 +50,15 @@ export const campaignRouter = createTRPCRouter({
         },
       });
     }),
-  get: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
+  get: publicProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.db.campaign.findUnique({
       where: { id: input },
       include: {
-        donations: true,
+        donations: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }),
@@ -91,4 +96,87 @@ export const campaignRouter = createTRPCRouter({
         where: { id: input },
       });
     }),
+  getLatestWithTotalDonations: publicProcedure.query(async ({ ctx }) => {
+    const campaigns = await ctx.db.campaign.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+      include: {
+        donations: true,
+      },
+      take: 3,
+      where: {
+        status: "ACTIVE",
+      },
+    });
+
+    const campaignsWithTotalDonations = campaigns.map((campaign) => {
+      const paidDonations = campaign.donations.filter(
+        (donation) => donation.status === "PAID",
+      );
+      const totalFunds = paidDonations.reduce(
+        (acc, donation) => acc + donation.amount,
+        0,
+      );
+
+      const totalDonations = paidDonations.length;
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { donations, ...rest } = campaign;
+
+      return {
+        ...rest,
+        totalFunds,
+        totalDonations,
+      };
+    });
+
+    return campaignsWithTotalDonations as CampaignWithTotalDonations[];
+  }),
+  getActiveCampaigns: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.campaign.findMany({
+      where: {
+        status: "ACTIVE",
+      },
+    });
+  }),
+  getAllWithTotalDonations: publicProcedure.query(async ({ ctx }) => {
+    const campaigns = await ctx.db.campaign.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+      include: {
+        donations: true,
+      },
+      where: {
+        status: "ACTIVE",
+      },
+    });
+
+    const campaignsWithTotalDonations = campaigns.map((campaign) => {
+      const paidDonations = campaign.donations.filter(
+        (donation) => donation.status === "PAID",
+      );
+      const totalFunds = paidDonations.reduce(
+        (acc, donation) => acc + donation.amount,
+        0,
+      );
+
+      const totalDonations = paidDonations.length;
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { donations, ...rest } = campaign;
+
+      return {
+        ...rest,
+        totalFunds,
+        totalDonations,
+      };
+    });
+
+    return campaignsWithTotalDonations as CampaignWithTotalDonations[];
+  }),
+  count: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.campaign.count();
+  }),
 });

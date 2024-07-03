@@ -1,7 +1,7 @@
 import {
   createTRPCRouter,
   protectedProcedure,
-  // publicProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 
 export const donationRouter = createTRPCRouter({
@@ -19,5 +19,23 @@ export const donationRouter = createTRPCRouter({
         },
       },
     });
+  }),
+  count: publicProcedure.query(async ({ ctx }) => {
+    const paidDonations = await ctx.db.donation.count({
+      where: {
+        status: "PAID",
+      },
+    });
+
+    return paidDonations;
+  }),
+  countTotalFunds: publicProcedure.query(async ({ ctx }) => {
+    const totalFunds = await ctx.db.donation.aggregate({
+      _sum: {
+        amount: true,
+      },
+    });
+
+    return totalFunds._sum.amount;
   }),
 });

@@ -1,8 +1,9 @@
 import { z } from "zod";
 import {
-    createTRPCRouter,
-    protectedProcedure, publicProcedure,
-    // publicProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  // publicProcedure,
 } from "~/server/api/trpc";
 import bcrypt from "bcrypt";
 
@@ -68,7 +69,7 @@ export const userRouter = createTRPCRouter({
         where: { id: input },
       });
     }),
-    createUser: publicProcedure
+  createUser: publicProcedure
     .input(
       z.object({
         name: z.string(),
@@ -87,4 +88,8 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  count: publicProcedure.query(async ({ ctx }) => {
+    const users = await ctx.db.user.count();
+    return users;
+  }),
 });
