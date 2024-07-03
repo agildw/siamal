@@ -14,11 +14,36 @@ model User {
     id            String    @id @default(cuid())
     name          String
     role          UserRole  @default(USER)
-    password      String
+    image        String?
+    password      String?
     email         String    @unique
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
+    emailVerified DateTime?
     campaigns     Campaign[]
+    accounts      Account[]
+    donations     Donation[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
 }
 
 model Campaign {
@@ -32,37 +57,24 @@ model Campaign {
     endDate      DateTime
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
-    news          News[]
     donations     Donation[]
     userId        String?
     user          User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
-model News {
-    id            String    @id @default(cuid())
-    title         String
-    description   String
-    thumbnail     String
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime?  @updatedAt
-    campaignId    String
-    campaign      Campaign  @relation(fields: [campaignId], references: [id])
-}
 
 model Donation {
     id            String    @id @default(uuid())
     status      DonationStatus @default(PENDING)
     amount        Int
-    note          String?
-    donorName     String
-    donorEmail    String
-    donorPhone    String
     paymentMethod String?
     paidAt        DateTime?
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
     expiryDate    DateTime
     campaignId    String
+    userId        String
+    user          User      @relation(fields: [userId], references: [id])
     campaign      Campaign  @relation(fields: [campaignId], references: [id])
 }
 
