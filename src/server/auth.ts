@@ -12,6 +12,8 @@ import { type Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
+import GoogleProvider from "next-auth/providers/google";
+import { env } from "~/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -98,14 +100,27 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          emailVerified: new Date(),
+        };
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
     maxAge: 6 * 60 * 60, // 6 hours
   },
-  pages:{
-    signIn: '/login',
-  }
+  pages: {
+    signIn: "/login",
+  },
 };
 
 /**
