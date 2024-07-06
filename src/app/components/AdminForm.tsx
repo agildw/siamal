@@ -25,7 +25,7 @@ interface AdminFormProps {
 const dataSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email().required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  password: Yup.string().optional(),
   role: Yup.string().required("Role is required"),
 });
 
