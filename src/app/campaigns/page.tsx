@@ -39,7 +39,7 @@ const Campaigns = async () => {
         <p className="self-start text-2xl font-semibold">Program Donasi</p>
         <div className="mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {campaigns.map((campaign) => (
-            <Link key={campaign.id} href={`/campaigns/${campaign.id}`}>
+            <Link key={campaign.id} href={`/campaigns/${campaign.url}`}>
               <CampaignCard key={campaign.id} campaign={campaign} />
             </Link>
           ))}
