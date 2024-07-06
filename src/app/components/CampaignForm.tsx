@@ -20,7 +20,7 @@ import { api } from "~/trpc/react";
 import * as Yup from "yup";
 import type { AlertMessage } from "types/utils";
 import { useRouter } from "next/navigation";
-import type { CampaignWithDonations } from "types/campaign";
+import type { CampaignWithDonationsAndUser } from "types/campaign";
 import { DataGrid } from "@mui/x-data-grid";
 import type { Donation, DonationStatus } from "@prisma/client";
 import { handleAmount } from "../utils/util";
@@ -28,7 +28,7 @@ import StatusChip from "./StatusChip";
 
 interface CampaignFormProps {
   userId: string;
-  campaign?: CampaignWithDonations;
+  campaign?: CampaignWithDonationsAndUser;
 }
 
 const dataSchema = Yup.object().shape({
@@ -38,6 +38,7 @@ const dataSchema = Yup.object().shape({
   startDate: Yup.date().required("Start Date is required"),
   endDate: Yup.date().required("End Date is required"),
   status: Yup.string().required("Status is required"),
+  url: Yup.string().required("URL is required"),
 });
 
 const dateFormattingOptions: Intl.DateTimeFormatOptions = {
@@ -69,9 +70,17 @@ const DonationList = ({ donations }: { donations: Donation[] }) => {
         columns={[
           // hide
           { field: "id", headerName: "ID" },
-          { field: "donorName", headerName: "Donor Name", width: 200 },
-          { field: "donorEmail", headerName: "Donor Email", width: 150 },
-          { field: "donorPhone", headerName: "Donor Phone", width: 150 },
+          {
+            field: "user",
+            headerName: "Donor",
+            width: 200,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            valueGetter: (params: any) => {
+              console.log(params);
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              return params?.name ? params?.name : "-";
+            },
+          },
           {
             field: "amount",
             headerName: "Amount",
@@ -129,6 +138,7 @@ const CampaignForm = ({ userId, campaign }: CampaignFormProps) => {
         ? moment(campaign.endDate)
         : moment().add(1, "days"),
       status: campaign?.status ?? "ACTIVE",
+      url: campaign?.url ?? "",
     },
     validationSchema: dataSchema,
     onSubmit: (values) => {
@@ -266,10 +276,30 @@ const CampaignForm = ({ userId, campaign }: CampaignFormProps) => {
                 variant="outlined"
                 fullWidth
                 size="small"
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                  void formik.setFieldValue(
+                    "url",
+                    e.target.value
+                      .toLowerCase()
+                      .replace(/[^a-zA-Z0-9\s]+/g, "")
+                      .replace(/\s+/g, "-"),
+                  );
+                }}
                 value={formik.values.title}
                 error={formik.touched.title && Boolean(formik.errors.title)}
                 helperText={formik.touched.title && formik.errors.title}
+              />
+              <TextField
+                id="url"
+                label="URL"
+                variant="outlined"
+                fullWidth
+                size="small"
+                onChange={formik.handleChange}
+                value={formik.values.url}
+                error={formik.touched.url && Boolean(formik.errors.url)}
+                helperText={formik.touched.url && formik.errors.url}
               />
               <TextField
                 id="thumbnail"

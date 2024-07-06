@@ -90,11 +90,11 @@ const Navbar = ({ user }: { user?: User }) => {
               >
                 <MenuItem
                   onClick={() => {
-                    router.push(`/dashboard/admin/${user.id}`);
+                    router.push("/donations");
                     handleCloseUserMenu();
                   }}
                 >
-                  Profile
+                  Riwayat Donasi
                 </MenuItem>
 
                 <MenuItem

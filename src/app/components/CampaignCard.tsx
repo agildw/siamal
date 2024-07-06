@@ -15,7 +15,7 @@ import { HeartIcon, ClockIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
 
 interface CampaignCardProps {
-  campaign: CampaignWithDonations | CampaignWithTotalDonations;
+  campaign: Omit<CampaignWithDonations, "user"> | CampaignWithTotalDonations;
   showStatus?: boolean;
 }
 
