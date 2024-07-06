@@ -44,6 +44,9 @@ export const donationRouter = createTRPCRouter({
       _sum: {
         amount: true,
       },
+      where: {
+        status: "PAID",
+      },
     });
 
     return totalFunds._sum.amount;
