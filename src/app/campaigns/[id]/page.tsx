@@ -7,10 +7,33 @@ import Link from "next/link";
 
 import CampaignDescription from "./_components/CampaignDescription";
 
-const CampaignDetails = async ({ params }: { params: { id: string } }) => {
+import type { Metadata } from "next";
+
+type Props = {
+  params: { id: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await api.campaign.getByUrl(params.id);
+  const description =
+    "Siamal adalah platform donasi dan amal terpercaya yang menghubungkan Anda dengan berbagai program sosial di Indonesia. Bersama kita wujudkan perubahan positif untuk masyarakat.";
+  if (!post) {
+    return {
+      title: "Siamal - Donasi Mudah, Aman, dan Berdampak",
+      description,
+    };
+  }
+
+  return {
+    title: post.title,
+    description,
+  };
+}
+
+const CampaignDetails = async ({ params }: Props) => {
   const { id } = params;
   const session = await getServerAuthSession();
-  const campaign = await api.campaign.get(id);
+  const campaign = await api.campaign.getByUrl(id);
 
   return (
     <main className="min-h-screen bg-white">
