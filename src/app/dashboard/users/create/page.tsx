@@ -11,6 +11,10 @@ const CreateCampaign = async () => {
     redirect("/api/auth/signin");
   }
 
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const links = [
     {
       title: "Dashboard",

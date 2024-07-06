@@ -20,6 +20,9 @@ export default async function Home() {
     redirect("/api/auth/signin");
   }
 
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
   const campaigns = await api.campaign.getAll();
   const donations = await api.donation.getAll();
 

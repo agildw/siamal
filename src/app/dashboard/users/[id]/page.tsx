@@ -12,6 +12,10 @@ const AdminDetails = async ({ params }: { params: { id: string } }) => {
     redirect("/api/auth/signin");
   }
 
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const user = await api.user.get(params.id);
 
   if (!user) {
@@ -24,7 +28,7 @@ const AdminDetails = async ({ params }: { params: { id: string } }) => {
       url: "/dashboard",
     },
     {
-      title: "Userse",
+      title: "Users",
       url: "/dashboard/users",
     },
     {

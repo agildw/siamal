@@ -45,7 +45,10 @@ const DonationCharts = ({ donations }: ChartProps) => {
         if (!acc[donation.campaign.id]) {
           acc[donation.campaign.id] = 0;
         }
-        acc[donation.campaign.id] += donation.amount;
+
+        acc[donation.campaign.id] =
+          donation.amount + (acc[donation.campaign.id] ?? 0);
+
         return acc;
       },
       {} as Record<string, number>,
@@ -149,7 +152,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
                   grid: {
                     display: false,
                   },
-                  // stacked: true,
+                  stacked: true,
                 },
                 y: {
                   grid: {
@@ -158,7 +161,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
                   ticks: {
                     callback: (value) => `Rp${handleAmount(Number(value))}`,
                   },
-                  // stacked: true,
+                  stacked: true,
                 },
               },
               plugins: {

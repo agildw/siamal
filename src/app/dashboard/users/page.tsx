@@ -38,6 +38,10 @@ const Users = async () => {
     redirect("/api/auth/signin");
   }
 
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const links = [
     {
       title: "Dashboard",
@@ -92,7 +96,7 @@ const Users = async () => {
                     {moment(user.createdAt).format("YYYY-MM-DD")}
                   </TableCell>
                   <TableCell>
-                    <Link href={`/dashboard/admin/${user.id}`}>
+                    <Link href={`/dashboard/users/${user.id}`}>
                       <Button
                         variant="contained"
                         color="primary"
