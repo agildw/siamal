@@ -34,6 +34,7 @@ export const campaignRouter = createTRPCRouter({
         startDate: z.coerce.date(),
         endDate: z.coerce.date(),
         userId: z.string(),
+        url: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -47,6 +48,7 @@ export const campaignRouter = createTRPCRouter({
           endDate: input.endDate,
           userId: input.userId,
           status: "ACTIVE",
+          url: input.url,
         },
       });
     }),
@@ -178,5 +180,19 @@ export const campaignRouter = createTRPCRouter({
   }),
   count: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.campaign.count();
+  }),
+  getByUrl: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    return ctx.db.campaign.findFirst({
+      where: {
+        url: input,
+      },
+      include: {
+        donations: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
   }),
 });

@@ -21,17 +21,21 @@ export const userRouter = createTRPCRouter({
         name: z.string(),
         email: z.string().email(),
         role: z.enum(["ADMIN", "USER"]),
-        password: z.string(),
+        password: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const hashedPassword = await bcrypt.hash(input.password, 10);
+      let hashedPassword;
+      if (input.password) {
+        hashedPassword = await bcrypt.hash(input.password, 10);
+      }
+
       return ctx.db.user.create({
         data: {
           name: input.name,
           email: input.email,
           role: input.role,
-          password: hashedPassword,
+          password: input.password ? hashedPassword : undefined,
         },
       });
     }),
