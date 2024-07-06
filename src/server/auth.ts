@@ -12,6 +12,9 @@ import { type Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { db } from "~/server/db";
+import GoogleProvider from "next-auth/providers/google";
+import { env } from "~/env";
+import type { UserRole } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -23,15 +26,17 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      username: string;
+      email: string;
       name: string;
+      role: UserRole;
     };
   }
 
   interface User {
     id: string;
     name: string;
-    username: string;
+    email: string;
+    role: UserRole;
     // ...other properties
     // role: UserRole;
   }
@@ -48,7 +53,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.name = user.name;
-        token.username = user.username;
+        token.email = user.email;
+        token.role = user.role;
       }
       return token;
     },
@@ -56,7 +62,8 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = String(token.id);
         session.user.name = String(token.name);
-        session.user.username = String(token.username);
+        session.user.email = String(token.email);
+        session.user.role = token.role as UserRole;
       }
       return session;
     },
@@ -65,19 +72,19 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         // // Add your own logic here
         // const user = { id: 1, name: "J Smith", username: "test@gmail.com" };
-        if (!credentials?.username || !credentials?.password) {
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
         const user = await db.user.findFirst({
           where: {
-            username: credentials.username,
+            email: credentials.email,
           },
         });
 
@@ -98,10 +105,27 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          role: "USER",
+          emailVerified: new Date(),
+        };
+      },
+    }),
   ],
   session: {
     strategy: "jwt",
     maxAge: 6 * 60 * 60, // 6 hours
+  },
+  pages: {
+    signIn: "/login",
   },
 };
 

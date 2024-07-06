@@ -4,12 +4,10 @@ import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-
 export const metadata = {
-  title: "Siamal Dashboard",
-  description: "Siamal Dashboard",
+  title: "Siamal - Donasi Mudah, Aman, dan Berdampak",
+  description:
+    "Siamal adalah platform donasi dan amal terpercaya yang menghubungkan Anda dengan berbagai program sosial di Indonesia. Bersama kita wujudkan perubahan positif untuk masyarakat.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -19,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="id" className={`${GeistSans.variable}`}>
       <body>
         <TRPCReactProvider>
           <AppRouterCacheProvider>{children}</AppRouterCacheProvider>

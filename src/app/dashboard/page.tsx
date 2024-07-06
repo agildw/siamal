@@ -20,6 +20,9 @@ export default async function Home() {
     redirect("/api/auth/signin");
   }
 
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
+  }
   const campaigns = await api.campaign.getAll();
   const donations = await api.donation.getAll();
 
@@ -31,17 +34,17 @@ export default async function Home() {
     <PageWrapper>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-8">
         <KPICard
-          title="Raised Funds"
+          title="Dana Terkumpul"
           value={`Rp${handleAmount(totalDonation)}`}
           Icon={BanknotesIcon}
         />
         <KPICard
-          title="Donations"
+          title="Donasi"
           value={handleAmount(donations.length)}
           Icon={ArchiveBoxArrowDownIcon}
         />
         <KPICard
-          title="Campaigns"
+          title="Kampanye"
           value={handleAmount(campaigns.length)}
           Icon={GlobeAmericasIcon}
         />

@@ -3,19 +3,16 @@ import AdminForm from "~/app/components/AdminForm";
 import Breadcrumbs from "~/app/components/Breadcrumbs";
 import PageWrapper from "~/app/components/PageWrapper";
 import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/trpc/server";
 
-const AdminDetails = async ({ params }: { params: { id: string } }) => {
+const CreateCampaign = async () => {
   const session = await getServerAuthSession();
 
   if (!session?.user) {
     redirect("/api/auth/signin");
   }
 
-  const user = await api.user.get(params.id);
-
-  if (!user) {
-    redirect("/dashboard/admin");
+  if (session.user.role !== "ADMIN") {
+    redirect("/");
   }
 
   const links = [
@@ -24,21 +21,21 @@ const AdminDetails = async ({ params }: { params: { id: string } }) => {
       url: "/dashboard",
     },
     {
-      title: "Admin",
-      url: "/dashboard/admin",
+      title: "Userse",
+      url: "/dashboard/users",
     },
     {
-      title: user.name || "Admin",
-      url: `/dashboard/admin/${user.id}`,
+      title: "Create Users",
+      url: "/dashboard/users/create",
     },
   ];
 
   return (
     <PageWrapper>
       <Breadcrumbs links={links} />
-      <AdminForm user={user} />
+      <AdminForm />
     </PageWrapper>
   );
 };
 
-export default AdminDetails;
+export default CreateCampaign;

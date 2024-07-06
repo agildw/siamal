@@ -18,6 +18,7 @@ import { useState } from "react";
 import Image from "next/image";
 import type { User } from "next-auth";
 import { signOut } from "next-auth/react";
+import { handleTruncate } from "~/app/utils/util";
 
 interface AppBarProps {
   drawerWidth: number;
@@ -32,7 +33,7 @@ const AppBar = ({ drawerWidth, user }: AppBarProps) => {
     ? 0
     : drawerWidth;
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const [drawer, setDrawer] = useAtom(drawerAtom);
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -88,15 +89,17 @@ const AppBar = ({ drawerWidth, user }: AppBarProps) => {
               onClick={handleOpenUserMenu}
             >
               <Image
-                src="/profile.png"
+                src={user.image ?? "/profile.png"}
                 alt="logo"
                 width={35}
                 height={15}
-                className="rounded-lg"
+                className="rounded-full"
               />
               <div className="hidden flex-col sm:flex">
-                <p className="text-sm font-semibold">{user.name}</p>
-                <p className="text-xs ">{user.username}</p>
+                <p className="text-sm font-semibold">
+                  {handleTruncate(user.name, 10)}
+                </p>
+                <p className="text-xs ">{handleTruncate(user.email, 10)}</p>
               </div>
               <ChevronDownIcon className="hidden h-4 w-4 fill-current text-gray-500 sm:block" />
             </div>

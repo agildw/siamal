@@ -13,11 +13,37 @@ datasource db {
 model User {
     id            String    @id @default(cuid())
     name          String
-    username         String   @unique
-    password      String
+    role          UserRole  @default(USER)
+    image        String?
+    password      String?
+    email         String    @unique
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
+    emailVerified DateTime?
     campaigns     Campaign[]
+    accounts      Account[]
+    donations     Donation[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
 }
 
 model Campaign {
@@ -25,43 +51,32 @@ model Campaign {
     title         String
     description   String
     thumbnail     String
+    url           String
     status        CampaignStatus
     target        Int
     startDate    DateTime
     endDate      DateTime
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
-    news          News[]
     donations     Donation[]
     userId        String?
     user          User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
-model News {
-    id            String    @id @default(cuid())
-    title         String
-    description   String
-    thumbnail     String
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime?  @updatedAt
-    campaignId    String
-    campaign      Campaign  @relation(fields: [campaignId], references: [id])
-}
 
 model Donation {
     id            String    @id @default(uuid())
     status      DonationStatus @default(PENDING)
     amount        Int
-    note          String?
-    donorName     String
-    donorEmail    String
-    donorPhone    String
+    paymentUrl    String
     paymentMethod String?
     paidAt        DateTime?
     createdAt     DateTime  @default(now())
     updatedAt     DateTime?  @updatedAt
     expiryDate    DateTime
     campaignId    String
+    userId        String
+    user          User      @relation(fields: [userId], references: [id])
     campaign      Campaign  @relation(fields: [campaignId], references: [id])
 }
 
@@ -76,4 +91,9 @@ enum DonationStatus {
     PAID
     CANCELLED
     EXPIRED
+}
+
+enum UserRole {
+    ADMIN
+    USER
 }

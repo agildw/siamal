@@ -13,7 +13,7 @@ const PageWrapper = async ({ children }: { children: React.ReactNode }) => {
     <div className="h-full min-h-screen">
       <AppBar drawerWidth={180} user={session.user} />
       <Drawer drawerWidth={300} />
-      <div className={`p-5 xl:ml-80 xl:mr-6 xl:py-10`}>{children}</div>
+      <div className={`p-5 lg:ml-80 lg:mr-6 lg:py-10`}>{children}</div>
     </div>
   );
 };

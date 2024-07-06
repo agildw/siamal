@@ -8,13 +8,13 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import type { Donation, Campaign } from "@prisma/client";
+
 import moment from "moment";
+import Image from "next/image";
 import { useState } from "react";
+import type { DonationWithCampaign } from "types/donation";
 import StatusChip from "~/app/components/StatusChip";
 import { handleAmount } from "~/app/utils/util";
-
-type DonationWithCampaign = Donation & { campaign: Pick<Campaign, "title"> };
 
 interface DontaionTableProps {
   donations: DonationWithCampaign[];
@@ -50,15 +50,15 @@ const DonationTable = ({ donations }: DontaionTableProps) => {
   };
   return (
     <div className="flex flex-col space-y-4 bg-white p-4">
-      <p className="text-xl font-bold text-gray-600">Recent Donations</p>
+      <p className="text-xl font-bold text-gray-600">Donasi Terkini</p>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Donor</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell>Campaign</TableCell>
+            <TableCell>Donatur</TableCell>
+            <TableCell>Jumlah</TableCell>
+            <TableCell>Kampanye</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Date</TableCell>
+            <TableCell>Tanggal</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -72,7 +72,18 @@ const DonationTable = ({ donations }: DontaionTableProps) => {
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((donation) => (
               <TableRow key={donation.id}>
-                <TableCell>{donation.donorName}</TableCell>
+                <TableCell>
+                  <div className="flex flex-row items-center">
+                    <Image
+                      src={donation.user.image ?? "/profile.png"}
+                      alt={donation.user.name}
+                      width={30}
+                      height={30}
+                      className="mr-2 rounded-full"
+                    />
+                    {donation.user.name}
+                  </div>
+                </TableCell>
                 <TableCell>Rp{handleAmount(donation.amount)}</TableCell>
                 <TableCell className="max-w-[20px] truncate">
                   {donation.campaign.title}
