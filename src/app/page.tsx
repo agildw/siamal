@@ -117,7 +117,7 @@ export default async function Home() {
         </div>
         <div className="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-8 px-12 sm:grid-cols-2 lg:grid-cols-3">
           {donations.map((campaign) => (
-            <Link href={`/campaigns/${campaign.id}`} key={campaign.id}>
+            <Link href={`/campaigns/${campaign.url}`} key={campaign.id}>
               <CampaignCard key={campaign.id} campaign={campaign} />
             </Link>
           ))}
