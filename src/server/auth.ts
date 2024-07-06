@@ -14,6 +14,7 @@ import bcrypt from "bcrypt";
 import { db } from "~/server/db";
 import GoogleProvider from "next-auth/providers/google";
 import { env } from "~/env";
+import type { UserRole } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -27,6 +28,7 @@ declare module "next-auth" {
       id: string;
       email: string;
       name: string;
+      role: UserRole;
     };
   }
 
@@ -34,6 +36,7 @@ declare module "next-auth" {
     id: string;
     name: string;
     email: string;
+    role: UserRole;
     // ...other properties
     // role: UserRole;
   }
@@ -51,6 +54,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.role = user.role;
       }
       return token;
     },
@@ -59,6 +63,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = String(token.id);
         session.user.name = String(token.name);
         session.user.email = String(token.email);
+        session.user.role = token.role as UserRole;
       }
       return session;
     },
@@ -109,6 +114,7 @@ export const authOptions: NextAuthOptions = {
           name: profile.name,
           email: profile.email,
           image: profile.picture,
+          role: "USER",
           emailVerified: new Date(),
         };
       },
