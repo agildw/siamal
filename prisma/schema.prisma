@@ -51,6 +51,7 @@ model Campaign {
     title         String
     description   String
     thumbnail     String
+    url           String
     status        CampaignStatus
     target        Int
     startDate    DateTime
@@ -67,6 +68,7 @@ model Donation {
     id            String    @id @default(uuid())
     status      DonationStatus @default(PENDING)
     amount        Int
+    paymentUrl    String
     paymentMethod String?
     paidAt        DateTime?
     createdAt     DateTime  @default(now())
