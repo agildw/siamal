@@ -5,6 +5,10 @@ export interface DonationWithUser extends Donation {
 }
 
 export interface CampaignWithDonations extends Campaign {
+  donations: Donation[];
+}
+
+export interface CampaignWithDonationsAndUser extends Campaign {
   donations: DonationWithUser[];
 }
 
