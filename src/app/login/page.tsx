@@ -9,7 +9,7 @@ import type { AlertMessage } from "../../../types/utils";
 import { Alert, Divider, TextField } from "@mui/material";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -28,9 +28,9 @@ const registerSchema = Yup.object().shape({
 
 const Login = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
-  console.log(callbackUrl);
+  // const searchParams = useSearchParams();
+  // const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+  const callbackUrl = "/";
   const createMutation = api.user.createUser.useMutation();
   const [message, setMessage] = useState<AlertMessage | null>(null);
   const [isLogin, setIsLogin] = useState(true);
