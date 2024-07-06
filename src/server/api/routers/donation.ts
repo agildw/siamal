@@ -31,11 +31,7 @@ export const donationRouter = createTRPCRouter({
     });
   }),
   count: publicProcedure.query(async ({ ctx }) => {
-    const paidDonations = await ctx.db.donation.count({
-      where: {
-        status: "PAID",
-      },
-    });
+    const paidDonations = await ctx.db.donation.count();
 
     return paidDonations;
   }),
@@ -43,6 +39,9 @@ export const donationRouter = createTRPCRouter({
     const totalFunds = await ctx.db.donation.aggregate({
       _sum: {
         amount: true,
+      },
+      where: {
+        status: "PAID",
       },
     });
 
