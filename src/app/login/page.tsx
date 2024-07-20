@@ -31,7 +31,7 @@ const Login = () => {
   // const searchParams = useSearchParams();
   // const callbackUrl = searchParams.get("callbackUrl") ?? "/";
   const callbackUrl = "/";
-  const createMutation = api.user.createUser.useMutation();
+  const createMutation = api.user.register.useMutation();
   const [message, setMessage] = useState<AlertMessage | null>(null);
   const [isLogin, setIsLogin] = useState(true);
   const formik = useFormik({
@@ -57,8 +57,11 @@ const Login = () => {
             redirect: false,
           });
           if (res?.error) {
-            const errMsg =
-              res.status === 401 ? "Invalid email or password" : res.error;
+            let errMsg = res.error;
+            if (errMsg !== "Email not verified") {
+              errMsg =
+                res.status === 401 ? "Invalid email or password" : res.error;
+            }
             setMessage({ type: "error", message: errMsg });
             return;
           }
@@ -82,12 +85,12 @@ const Login = () => {
 
           setMessage({
             type: "success",
-            message: "Account created successfully. Please login.",
+            message: "Account created successfully. Please verify your email.",
           });
           setIsLogin(true);
         } catch (error: any) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          const errMsg = error?.message?.includes("email")
+          const errMsg = error?.message?.includes("already exists")
             ? "Email already exists"
             : error.message;
           setMessage({ type: "error", message: errMsg });
@@ -234,7 +237,7 @@ const Login = () => {
                   className="w-full transform rounded-md bg-blue-600 px-4 py-2 tracking-wide text-white transition-colors duration-200 hover:bg-blue-500 focus:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                   type="submit"
                 >
-                  Sign in
+                  {isLogin ? "Sign in" : "Sign up"}
                 </button>
               </form>
               <div className="my-6 flex flex-col space-y-4">

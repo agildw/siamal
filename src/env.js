@@ -26,6 +26,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
     XENDIT_WEBHOOK_TOKEN: z.string(),
     XENDIT_SECRET_KEY: z.string(),
+    MJ_APIKEY_PUBLIC: z.string(),
+    MJ_APIKEY_PRIVATE: z.string(),
   },
 
   /**
@@ -52,6 +54,8 @@ export const env = createEnv({
     XENDIT_SECRET_KEY: process.env.XENDIT_SECRET_KEY,
     XENDIT_WEBHOOK_TOKEN: process.env.XENDIT_WEBHOOK_TOKEN,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    MJ_APIKEY_PUBLIC: process.env.MJ_APIKEY_PUBLIC,
+    MJ_APIKEY_PRIVATE: process.env.MJ_APIKEY_PRIVATE,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
