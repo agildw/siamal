@@ -16,12 +16,26 @@ interface ChartProps {
 }
 
 const backgroundColors = [
-  "#60a5fa",
-  "#fbbf24",
-  "#d97706",
-  "#818cf8",
-  "#d97706",
-  "#6ee7b7",
+  "#60a5fa", // Light Blue
+  "#fbbf24", // Yellow
+  "#d97706", // Orange
+  "#818cf8", // Light Purple
+  "#d97706", // Orange
+  "#6ee7b7", // Light Green
+  "#f472b6", // Pink
+  "#10b981", // Green
+  "#ef4444", // Red
+  "#3b82f6", // Blue
+  "#a855f7", // Purple
+  "#ec4899", // Dark Pink
+  "#f59e0b", // Amber
+  "#8b5cf6", // Violet
+  "#3f83f8", // Cornflower Blue
+  "#6b7280", // Cool Gray
+  "#f43f5e", // Rose
+  "#22d3ee", // Cyan
+  "#2dd4bf", // Teal
+  "#e879f9", // Fuchsia
 ];
 
 const DonationCharts = ({ donations }: ChartProps) => {
@@ -152,7 +166,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
                   grid: {
                     display: false,
                   },
-                  stacked: true,
+                  // stacked: true,
                 },
                 y: {
                   grid: {
@@ -161,7 +175,7 @@ const DonationCharts = ({ donations }: ChartProps) => {
                   ticks: {
                     callback: (value) => `Rp${handleAmount(Number(value))}`,
                   },
-                  stacked: true,
+                  // stacked: true,
                 },
               },
               plugins: {

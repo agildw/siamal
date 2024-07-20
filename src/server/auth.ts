@@ -102,6 +102,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        if (!user.emailVerified) {
+          // return null;
+          throw new Error("Email not verified");
+        }
+
         return user;
       },
     }),

@@ -40,6 +40,7 @@
     "next": "^14.2.1",
     "next-auth": "^4.24.7",
     "next-remove-imports": "^1.0.12",
+    "node-mailjet": "^6.0.5",
     "react": "^18.3.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.0",
