@@ -16,6 +16,9 @@ const config = {
       },
     ],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export const removeImportsConfig = removeImports({});
