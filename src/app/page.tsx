@@ -105,7 +105,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="px-4 py-16">
         <div className="mx-auto flex max-w-4xl flex-col items-center space-y-8">
           <p className="text-center text-3xl font-semibold text-gray-800">
             Kampanye Terbaru Kami
@@ -115,7 +115,7 @@ export default async function Home() {
             sx={{ borderBottomWidth: 2, borderColor: "blue" }}
           />
         </div>
-        <div className="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-8 px-12 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 sm:px-12 lg:grid-cols-3">
           {donations.map((campaign) => (
             <Link href={`/campaigns/${campaign.url}`} key={campaign.id}>
               <CampaignCard key={campaign.id} campaign={campaign} />
